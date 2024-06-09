@@ -1,19 +1,18 @@
 import React, { PureComponent } from "react";
-import { Row, Col } from "antd";
-import { Modal } from "antd-mobile";
+import { Row, Col, Input, Button, Modal } from "antd";
 import { Link } from "dva/router";
 import { connect } from "dva";
-
 import event from "utils/event";
 import Iconfont from "components/iconfont/index";
+import './style.css'; // 导入样式文件
 
-const alert = Modal.alert;
 interface Props {
   shopCart?: any;
   dispatch?: (args) => any;
 }
 interface State {
   sendTime: string;
+  remark: string;
 }
 type ReadonlyState = Readonly<State>;
 
@@ -22,9 +21,11 @@ class Balance extends PureComponent<Props, ReadonlyState> {
   constructor(props) {
     super(props);
     this.state = {
-      sendTime: "尽快"
+      sendTime: "尽快",
+      remark: ""
     };
   }
+
   componentDidMount() {
     event.on("sure-send-time", time => {
       console.log(time);
@@ -33,11 +34,16 @@ class Balance extends PureComponent<Props, ReadonlyState> {
   }
 
   toPay = () => {
-    alert("付款", "马上付款", [
-      { text: "取消", onPress: () => console.log(1) },
-      { text: "确定", onPress: () => this.addOrder() }
-    ]);
+    Modal.confirm({
+      title: '付款',
+      content: '马上付款',
+      okText: '确定',
+      cancelText: '取消',
+      onOk: () => this.addOrder(),
+      onCancel: () => console.log(1),
+    });
   };
+
   async addOrder() {
     const { shopCart, dispatch } = this.props;
     const goodList = Object.values(shopCart.cart)
@@ -51,7 +57,8 @@ class Balance extends PureComponent<Props, ReadonlyState> {
         };
       });
     const query = {
-      goodList
+      goodList,
+      remark: this.state.remark
     };
     const url = window.$api.order.addOrder;
     const option = { loadingText: "提交中……" };
@@ -64,10 +71,16 @@ class Balance extends PureComponent<Props, ReadonlyState> {
       window.$commonErrorHandler(url)(err);
     }
   }
+
+  handleRemarkChange = (e) => {
+    this.setState({ remark: e.target.value });
+  };
+
   render() {
     const iconStyle = { fontSize: ".35rem" };
     const common = { color: "#8a8a8a" };
     const { shopCart } = this.props;
+    console.log(shopCart)
     const _cart = shopCart.cart;
 
     const balance =
@@ -75,74 +88,74 @@ class Balance extends PureComponent<Props, ReadonlyState> {
         ? Object.values(_cart).filter((item: any) => item.isSelect)
         : [];
     return (
-      <div className="balance" style={{ position: "relative" }}>
-        <div className="hr-40" />
-        <div className="flex-box flex-ju-c-bt h-100 bg-fff pd-h-20 ">
-          <span>请选择地址</span>
-          <Iconfont name="you" {...common} size={20} />
-        </div>
-
-        <Row className=" h-100 bg-fff pd-h-20 bd-top">
-          <Col span={4}>
-            <img
-              className=" icon-2 "
-              src={require("assets/img/ic-wx-pay.png")}
-              alt=""
-            />
-          </Col>
-          <Col span={20}>
-            <span>微信支付</span>
-          </Col>
-        </Row>
-        <div className="flex-box flex-ju-c-bt h-100 bg-fff  pd-h-20 bd-top">
-          <span>发票类型</span>
-          <div className="flex-box">
-            <span>不需要发票</span>
-            <Iconfont name="you" {...common} size={20} />
-          </div>
-        </div>
-        <Link to={`/sendTime`}>
-          <div className="flex-box flex-ju-c-bt h-100 bg-fff  pd-h-20 bd-top">
-            <span>送货时间</span>
-            <div className="flex-box">
-              <span>{this.state.sendTime}</span>
-              <Iconfont name="you" {...common} size={20} />
+      <div className="balance-container">
+        <div className="balance">
+          <div className="address-section bg-fff pd-20">
+            <div className="address-title">大梨 18033441849</div>
+            <div className="address-detail">
+              广东省 深圳市 福田区 东海花园
             </div>
           </div>
-        </Link>
-        <div className="hr" />
-        <div className="bg-fff  ">
-          {balance.map((item: any, idx) => {
-            return (
-              <div key={idx} className="pd-20">
-                <Row>
-                  <Col span={5}>
-                    <img src={item.productImage} alt="" />
-                  </Col>
-                  <Col span={19} className="pd-lf-20">
-                    <p>{item.productName}</p>
-                    <div className="flex-box flex-ju-c-bt">
-                      <span>
-                        售价：¥{item.productPrice}元x{item.number}
-                      </span>
-                      <span>{item.productPrice * item.number}元</span>
-                    </div>
-                  </Col>
-                </Row>
+
+          <div className="product-info bg-fff pd-20">
+            {balance.map((item: any, idx) => {
+              return (
+                <div key={idx} className="pd-20">
+                  <Row>
+                    <Col span={6}>
+                      <img src={item.productImage} alt="" style={{ width: "100px", height: "100px" }} />
+                    </Col>
+                    <Col span={18} className="pd-lf-20">
+                      <p>{item.productName}</p>
+                      <div className="flex-box flex-ju-c-bt">
+                        <span>售价：¥{item.productPrice}元x{item.number}</span>
+                        <span>{item.productPrice * item.number}元</span>
+                      </div>
+                    </Col>
+                  </Row>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="other-info bg-fff pd-20">
+            <div className="flex-box flex-ju-c-bt h-100">
+              <span>发票类型</span>
+              <div className="flex-box">
+                <span>不需要发票</span>
+                <Iconfont name="you" {...common} size={20} />
               </div>
-            );
-          })}
+            </div>
+
+            <Link to={`/sendTime`}>
+              <div className="flex-box flex-ju-c-bt h-100">
+                <span>送货时间</span>
+                <div className="flex-box">
+                  <span>{this.state.sendTime}</span>
+                  <Iconfont name="you" {...common} size={20} />
+                </div>
+              </div>
+            </Link>
+          </div>
+
+          <div className="remark-section bg-fff pd-20">
+            <Input
+              placeholder="填写备注信息"
+              value={this.state.remark}
+              onChange={this.handleRemarkChange}
+            />
+          </div>
         </div>
-        <div className="balance-footer bg-fff">
-          <Row>
+        <div className="balance-footer">
+          <Row style={{ width: '100%' }}>
             <Col span={14}>
               <div className="flex-box price">
                 共{shopCart.cartTotalNum}件,合计：
                 {shopCart.cartTotalPrice}元
               </div>
             </Col>
-            <Col onClick={this.toPay} span={10}>
-              <div className="flex-box pay">去付款</div>
+            <Col span={10}>
+              <Link to={`/payment`} className="submit-button">提交订单</Link>
             </Col>
           </Row>
         </div>
@@ -150,4 +163,5 @@ class Balance extends PureComponent<Props, ReadonlyState> {
     );
   }
 }
+
 export default Balance;

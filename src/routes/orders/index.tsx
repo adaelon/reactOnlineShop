@@ -1,47 +1,85 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import { Tabs } from "antd-mobile";
-
 import OrderItem from "./components/order-item";
 import ErrorBoundary from "components/common/errorBoundary";
-// @ErrorBoundary
-interface State {
-  orderList: any[];
+import { connect } from "dva";
+import WithFooter from "components/hocs/withFooter";
+interface Order {
+  orderId: number;
+  orderSn: string | null;
+  customerId: number;
+  productErm: string | null;
+  shippingUser: string | null;
+  createTime: string;
+  orderMoney: number;
+  paymentMethod: string;
+  productId: number;
+  productImage: string;
+  productName: string;
+  productNum: number;
+  productPrice: number | null;
+  // other fields...
 }
-type ReadonlyState = Readonly<State>;
 
-class Orders extends Component<{}, ReadonlyState> {
+interface State {
+  orderList: Order[];
+}
+
+interface Props {
+  app?: any;
+  
+}
+@connect(({ app }) => ({ app}))
+@WithFooter
+class Orders extends PureComponent<Props, State>{
   constructor(props) {
     super(props);
     this.state = {
-      orderList: null
+      orderList: []
     };
   }
+
   componentDidMount() {
     this.getOrders();
   }
+
   async getOrders() {
-    const url = window.$api.order.getOrders;
+    const { user } = this.props.app;
+
+    const url = `${window.$api.order.getOrders}/${user.userId}`;
     try {
       const res = await window.$http.get(url);
-      // console.log('res', res);
+      console.log('res', res);
       if (!res) return;
       this.setState({
-        orderList: res.data.orderList
+        orderList: res.data 
       });
     } catch (err) {
       window.$commonErrorHandler(url)(err);
     }
   }
+
+  renderOrders(orders: Order[]) {
+    if (orders.length === 0) {
+      return <div>没有订单</div>;
+    }
+    return orders.map((order, index) => (
+      <div
+        key={index}
+        style={{
+          borderRadius: ".5rem",
+          padding: " .15rem",
+          boxSizing: "content-box"
+        }}>
+        <OrderItem key={order.orderId} order={order} />
+      </div>
+    ));
+  }
+
   render() {
     const { orderList } = this.state;
-    if (!orderList) {
-      return null;
-    }
-    const tabs = [
-      { title: "未发货" },
-      { title: "已发货" },
-      { title: "已评价" }
-    ];
+    const tabs = [{ title: "未发货" }];
+
     const divStyle = {
       display: "flex",
       alignItems: "center",
@@ -49,34 +87,17 @@ class Orders extends Component<{}, ReadonlyState> {
       height: "150px",
       backgroundColor: "#fff"
     };
+
     return (
       <div>
         <ErrorBoundary>
           <Tabs tabs={tabs} initialPage={0}>
-            <div>
-              {orderList.map((order, index) => {
-                return (
-                  <div
-                    key={index}
-                    style={{
-                      borderRadius: ".5rem",
-                      padding: " .15rem",
-                      boxSizing: "content-box"
-                    }}>
-                    {order.list.map((item, idx) => {
-                      return <OrderItem key={idx} order={item} />;
-                    })}
-                  </div>
-                );
-              })}
-            </div>
-
-            <div style={divStyle}>Content of second tab</div>
-            <div style={divStyle}>Content of third tab</div>
+            <div>{this.renderOrders(orderList)}</div>
           </Tabs>
         </ErrorBoundary>
       </div>
     );
   }
 }
+
 export default Orders;

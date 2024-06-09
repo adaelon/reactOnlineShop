@@ -1,15 +1,13 @@
 import React, { Component } from 'react';
 import { Row, Col } from 'antd';
 import { Link } from 'dva/router';
-import ImgWraper from 'components/common/imgWraper'
+import ImgWraper from 'components/common/imgWraper';
+
 interface Props {
   order: any;
 }
-export default class OrderItem extends Component<Props> {
-  constructor(props) {
-    super(props);
-  }
 
+export default class OrderItem extends Component<Props> {
   render() {
     const { order } = this.props;
     return (
@@ -19,20 +17,20 @@ export default class OrderItem extends Component<Props> {
             <Col span={7}>
               <ImgWraper
                 style={{ width: '1.5rem', height: '1.5rem' }}
-                src={order.imgs[0]}
+                src={order.productImage}
                 alt={'商品'}
                 data-errorimgsrc={require('assets/img/default-good.jpg')}
               />
             </Col>
             <Col span={12}>
               <div>
-                <p>{order.goodName}</p>
-                <p className="good-itm-p-2">{order.desction}</p>
+                <p>{order.productName}</p>
+                <p className="good-itm-p-2">订单创建时间: {order.createTime}</p>
               </div>
             </Col>
             <Col span={5}>
               <div>
-                <span>¥{order.price * order.number}</span>
+                <span>¥{order.orderMoney * order.productNum}</span>
               </div>
             </Col>
           </Row>

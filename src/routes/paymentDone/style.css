@@ -1,0 +1,51 @@
+.payment-success-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f5f5f5;
+  }
+  
+  .payment-success-content {
+    text-align: center;
+    background-color: #fff;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .success-icon {
+    margin-bottom: 20px;
+  }
+  
+  .success-icon img {
+    width: 50px; /* 根据图片的实际大小调整 */
+    height: 50px; /* 根据图片的实际大小调整 */
+  }
+  
+  h2 {
+    color: #ff4d4f;
+    margin-bottom: 20px;
+  }
+  
+  .button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .check-order-button {
+    background-color: #ff4d4f;
+    border-color: #ff4d4f;
+    width: 100%;
+  }
+  
+  .check-order-button:hover {
+    background-color: #ff7875;
+    border-color: #ff7875;
+  }
+  
+  .back-home-button {
+    width: 100%;
+  }
+  

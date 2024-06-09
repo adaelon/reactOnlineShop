@@ -49,6 +49,7 @@ export default {
       const cartTotalNum: number = Object.values(state.cart)
         .filter((item: any) => item.isSelect)
         .reduce((prevTotalNum, cur: any) => {
+          console.log(prevTotalNum)
           return prevTotalNum + cur.number;
         }, 0);
       localStorage.setItem("cartTotalNum", "" + cartTotalNum);
@@ -62,7 +63,8 @@ export default {
       const cartTotalPrice: number = Object.values(state.cart)
         .filter((item: any) => item.isSelect)
         .reduce((prevTotalPrice: any, cur: any) => {
-          return prevTotalPrice + cur.number * cur.price;
+          
+          return prevTotalPrice + cur.number * cur.productPrice;
         }, 0);
       localStorage.setItem("cartTotalPrice", "" + cartTotalPrice);
       return {
@@ -77,10 +79,10 @@ export default {
         Object.values(cart) &&
         Object.keys(cart).findIndex(item => item === goodId) !== -1;
       if (cartHasThisGood) {
-        // console.log('购物车有该商品')
+        console.log('购物车有该商品')
         cart[goodId].number += 1;
       } else {
-        // console.log('购物车无该商品')
+        console.log('购物车无该商品')
         cart[goodId] = Object.assign({}, goodInfo, {
           isSelect: true,
           number: 1

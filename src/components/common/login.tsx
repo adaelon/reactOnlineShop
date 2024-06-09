@@ -39,13 +39,13 @@ class Login extends Component<Props, ReadonlyState> {
       if (!err) {
         console.log("Received values of form: ", values);
         const query = {
-          phone: getFieldValue("username"),
+          username: getFieldValue("username"),
           password: getFieldValue("password")
         };
         const option = { loadingTxt: "登录中……" };
         const url = window.$api.user.login;
         try {
-          const res = await window.$http.post(url, { query, option });
+          const res = await window.$http.post(url, { query });
           dispatch({ type: "app/changeUser", payload: res.data });
           Cookies.set("token", res.data.token);
           event.emit("showLogin", false);

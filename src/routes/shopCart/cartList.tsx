@@ -40,7 +40,7 @@ class cartList extends Component<Props> {
                         </Col>
                         <Col span={8} className=" btn-1">
                             <div className="flex-box">
-                                <Link to={`/classify`}>继续购物</Link>
+                                <Link to={`/`}>继续购物</Link>
                             </div>
                         </Col>
                         <Col span={8} className=" bg-org color-fff btn-2">

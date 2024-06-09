@@ -11,13 +11,13 @@ export const api:any = {
     addGoodComment: "/comment/add/:goodId"
   },
   category: {
-    getCates: "/category/list"
+    getCates: "/onlineshop/pmscategory/findAll"
   },
   banner: {
     getHomeBanner: "/banner/list"
   },
   user: {
-    login: "/user/login",
+    login: "/logins",
     signup: "/user/register",
     uploadAvatar: "/user/uploadAvatar"
 
@@ -27,9 +27,9 @@ export const api:any = {
     sendSms: "/sms/sendSms"
   },
   order: {
-    getOrders: "/order/list",
-    addOrder: "/order/add",
-    getOrderDetail: "/order/detail/:orderId"
+    getOrders: "/master/findByCustomerId/",
+    addOrder: "/master/add",
+    getOrderDetail: "/master/find/"
   },
   upload: "/oss/upload"
 };

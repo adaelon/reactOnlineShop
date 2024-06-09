@@ -52,6 +52,16 @@ export const request = async (url, options = null) => {
   } else {
     newOption = defaultOption;
   }
+  const user = sessionStorage.getItem("user")
+  ? JSON.parse(sessionStorage.getItem("user"))
+  : null;
+
+  // 检查 user 信息是否为空
+  if (!user || !user.userId) {
+    console.log("用户信息缺失，跳转到登录页面");
+    event.emit("showLogin", true);
+    
+  }
   // console.log(newOption)
   return fetch(server + url, newOption)
     .then(checkStatus)

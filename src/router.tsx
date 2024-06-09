@@ -75,6 +75,14 @@ const BindPhone = WithLoadable({
   loader: () => import("routes/personal/bindPhone"),
   
 });
+const Payment = WithLoadable({
+  loader: () => import("routes/payment"),
+  
+});
+const PaymentDone = WithLoadable({
+  loader: () => import("routes/paymentDone"),
+  
+});
 
 export default function({ history }) {
   return (
@@ -99,6 +107,8 @@ export default function({ history }) {
           <Route path="/commentList/:goodId" component={CommentList} />
           <Route path="/commentForm/:goodId" component={CommentForm} />
           <Route path="/goodDetail/:goodId" component={GoodDetail} />
+          <Route path="/payment" component={Payment} />
+          <Route path="/paymentDone" component={PaymentDone} />
         </Switch>
       </Router>
     </ErrorBoundary>

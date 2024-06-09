@@ -1,0 +1,56 @@
+.classify-container {
+    display: flex;
+    height: 100vh;
+  }
+  
+  .classify-sidebar {
+    width: 20%;
+    background-color: #f5f5f5;
+    padding: 10px;
+    overflow-y: auto;
+  }
+  
+  .sidebar-item {
+    padding: 10px;
+    cursor: pointer;
+  }
+  
+  .sidebar-item.active {
+    background-color: #ff4d97;
+    color: white;
+  }
+  
+  .classify-content {
+    width: 80%;
+    padding: 20px;
+    overflow-y: auto;
+  }
+  
+  .category-title {
+    margin-top: 20px;
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  .goods-list {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .goods-item {
+    width: 20%;
+    padding: 10px;
+    text-align: center;
+  }
+  
+  .goods-image {
+    width: 100%;
+    height: auto;
+  }
+  
+  .category-block {
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+  }
+  

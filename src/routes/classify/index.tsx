@@ -1,133 +1,108 @@
 import React, { PureComponent } from "react";
-//公共组件
+// 公共组件
 import WithFooter from "components/hocs/withFooter";
-import { Element, Link } from "react-scroll";
+import "./style.css"; // 引入自定义的CSS文件
+
 interface Props {
   history?: any;
 }
+
 interface State {
-  list: any[];
+  categories: any[];
+  selectedCategory: number | null;
 }
+
 type ReadonlyState = Readonly<State>;
 
 @WithFooter
-class cateify extends PureComponent<Props, ReadonlyState> {
+class Cateify extends PureComponent<Props, ReadonlyState> {
   constructor(props) {
     super(props);
     this.state = {
-      list: null
+      categories: [],
+      selectedCategory: null,
     };
   }
+
   componentDidMount() {
     this.getCates();
   }
+
   async getCates() {
     const url = window.$api.category.getCates;
     try {
       const res = await window.$http.get(url);
-      const arr = res.data.map(item => {
-        return this.getGoodsList(item.cateId);
-      });
-      await this.setState({
-        list: await Promise.all(arr)
-      });
+      console.log(res)
+      const categories = res.list;
+      this.setState({ categories });
     } catch (err) {
       window.$commonErrorHandler(url)(err);
     }
   }
+
+  selectCategory = (categoryId: number) => {
+    this.setState({ selectedCategory: categoryId });
+  };
+
   toGooddetail = (goodId: string) => {
     this.props.history.push({
-      pathname: `/goodDetail/${goodId}`
+      pathname: `/goodDetail/${goodId}`,
     });
   };
-  getGoodsList(cateId: string): any[] {
-    return window.$http
-      .get(window.$api.good.getGoodsByCate, { params: { cateId } })
-      .then(res => {
-        return res.data;
-      });
-  }
+
   render() {
-    const { list } = this.state;
-    console.log(list);
-    if (!list) {
-      return null;
-    }
+    const { categories, selectedCategory } = this.state;
+    const level1Categories = categories.filter(
+      (cate) => cate.catLevel === 1
+    );
+    const level2Categories = categories.filter(
+      (cate) => cate.catLevel === 2 && cate.parentCid === selectedCategory
+    );
+
     return (
-      <div className="classify">
-        <div
-          style={{
-            position: "fixed",
-            top: "0",
-            left: "0",
-            right: "0",
-            zIndex: 99
-          }}>
-          <div className="classify-title">
-            {list.map((item, idx) => {
-              if (Array.isArray(item.rows) && !item.rows.length) {
-                return null;
-              }
-              return (
-                <div className="item" key={idx}>
-                  <Link
-                    to={`anchor-` + item.rows[0].cateId}
-                    spy={true}
-                    smooth={true}
-                    duration={500}
-                    offset={-50}
-                    activeClass="active">
-                    <span>{item.rows[0].cate}</span>
-                  </Link>
-                </div>
-              );
-            })}
-          </div>
+      <div className="classify-container">
+        <div className="classify-sidebar">
+          {level1Categories.map((cate) => (
+            <div
+              key={cate.catId}
+              className={`sidebar-item ${
+                selectedCategory === cate.catId ? "active" : ""
+              }`}
+              onClick={() => this.selectCategory(cate.catId)}
+            >
+              {cate.name}
+            </div>
+          ))}
         </div>
-        <div
-          style={{
-            position: "relative",
-            top: ".8rem"
-          }}>
-          {list.map((cate_item, idx) => {
-            if (Array.isArray(cate_item.rows) && !cate_item.rows.length) {
-              return null;
-            }
-            return (
-              <Element key={idx} name={`anchor-${cate_item.rows[0].cateId}`}>
-                <div>
-                  <div className="bg-fff pd-h-20">
-                    <div className="flex-box h-80 bg-fff title">
-                      {cate_item.rows[0].cate}
+        <div className="classify-content">
+          {selectedCategory && (
+            <div>
+              {level2Categories.map((cate) => (
+                <div key={cate.catId} className="category-block">
+                  <h4 className="category-title">{cate.name}</h4>
+                  {/* 假设每个二级分类下有商品列表 */}
+                  <div className="goods-list">
+                    {/* 使用示例商品数据 */}
+                    <div
+                      className="goods-item"
+                      onClick={() => this.toGooddetail(String(1))} // 示例商品ID
+                    >
+                      <img
+                        className="goods-image"
+                        src="https://via.placeholder.com/150"
+                        alt="商品示例"
+                      />
+                      <p>商品名称</p>
                     </div>
-                    {cate_item.rows.map(item => {
-                      return (
-                        <div
-                          onClick={() => this.toGooddetail(item.goodId)}
-                          key={item.goodId}
-                          className="classify-block ">
-                          {/* <Link to={`/goodDetail/${item.goodId}`}> */}
-                          <div className="flex-box flex-ver-box">
-                            <img
-                              className="classify-good-img"
-                              src={item.imgs[0]}
-                              alt=""
-                            />
-                            <p>{item.goodName}</p>
-                          </div>
-                          {/* </Link> */}
-                        </div>
-                      );
-                    })}
                   </div>
-                  <div className="hr" />
                 </div>
-              </Element>
-            );
-          })}
+              ))}
+            </div>
+          )}
         </div>
       </div>
     );
   }
 }
-export default cateify;
+
+export default Cateify;

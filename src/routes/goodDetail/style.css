@@ -1,0 +1,76 @@
+.good-detail {
+    padding: 16px;
+  }
+  
+  .detail-text {
+    padding: 16px;
+  }
+  
+  .hr {
+    border-top: 1px solid #f0f0f0;
+  }
+  
+  .flex-box {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .price {
+    color: #ff4d4f;
+    font-size: 18px;
+  }
+  
+  .bg-fff {
+    background-color: #fff;
+  }
+  
+  .p-1 {
+    padding: 8px 0;
+  }
+  
+  .p-2 {
+    padding: 8px;
+  }
+  
+  .color-section, .size-section {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .color-item, .size-item {
+    padding: 10px;
+    margin: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100px; /* 设置宽度 */
+    height: 100px; /* 设置高度 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .color-item.selected, .size-item.selected {
+    border-color: #ff4d4f;
+    color: #ff4d4f;
+  }
+  
+
+  .custom-modal {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    top: 0;
+    padding-bottom: 0;
+  }
+  
+  .custom-modal-body {
+    height: calc(100vh - 55px - 53px);
+    overflow-y: auto;
+  }
+
+  
+  .modal-content {
+    padding: 20px;
+  }
+  
